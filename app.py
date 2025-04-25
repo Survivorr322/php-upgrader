@@ -10,13 +10,17 @@ app = Flask(__name__)
 UPLOAD_FOLDER = tempfile.gettempdir()
 
 def transform_php_code(code):
-    code = re.sub(r'\bmysql_([a-zA-Z_]+)', r'mysqli_\1', code)
-    code = re.sub(r'<\?(?!php)', '<?php', code)
-    code = re.sub(r'&(\$\w+)', r'\1', code)
-    code = re.sub(r'\bereg\((.*?)\)', r'preg_match(\1)', code)
-    code = re.sub(r'\bvar\b', 'public', code)
-    code = re.sub(r'\bsplit\(', 'explode(', code)
-    return code
+    try:
+        code = re.sub(r'\bmysql_([a-zA-Z_]+)', r'mysqli_\1', code)
+        code = re.sub(r'<\?(?!php)', '<?php', code)
+        code = re.sub(r'&(\$\w+)', r'\1', code)
+        code = re.sub(r'\bereg\((.*?)\)', r'preg_match(\1)', code)
+        code = re.sub(r'\bvar\b', 'public', code)
+        code = re.sub(r'\bsplit\(', 'explode(', code)
+        return code
+    except Exception as e:
+        print(f"[HATA] Kod dönüştürülürken hata oluştu: {e}")
+        return code  # Orijinal kodu bozmadan döndür
 ... 
 ... def process_php_files(folder_path):
 ...     php_files = list(Path(folder_path).rglob("*.php"))
